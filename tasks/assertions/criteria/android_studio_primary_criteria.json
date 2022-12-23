@@ -6,6 +6,10 @@
         {
             "type": "string"
         },
+        "symlink":
+        {
+            "type": "string"
+        },
         "desktop":
         {
             "type": "object",

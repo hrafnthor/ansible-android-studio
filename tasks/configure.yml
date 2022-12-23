@@ -13,7 +13,7 @@
 - name: Symlink client binary
   ansible.builtin.file:
     src: "{{ client_version_dir.stat.path }}/bin/studio.sh"
-    dest: "/usr/bin/{{ binary_name }}"
+    dest: "/usr/bin/{{ client.symlink | default(symlink) }}"
     owner: "root"
     group: "root"
     mode: 0755
@@ -40,7 +40,7 @@
   ansible.builtin.lineinfile: 
     path: "/usr/share/applications/{{ file_name }}.desktop"
     regexp: "^Name=" 
-    line: "Name={{ client.desktop.name }}"
+    line: "Name={{ client.desktop.name | default('Android Studio') }}"
   when:
     - client_version_dir.stat.exists
     - client.desktop is defined

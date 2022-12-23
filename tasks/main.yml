@@ -31,7 +31,7 @@
   ansible.builtin.include_tasks: configure.yml
   vars:
     client: "{{ android_studio_primary }}"
-    binary_name: "astudio"
+    symlink: "astudio"
     file_name: "android-studio" 
   when:
     - android_studio_primary is defined
@@ -41,7 +41,7 @@
   ansible.builtin.include_tasks: configure.yml
   vars:
     client: "{{ android_studio_canary }}"
-    binary_name: "astudioc"
+    symlink: "astudioc"
     file_name: "android-studio-canary"
   when:
     - android_studio_canary is defined
