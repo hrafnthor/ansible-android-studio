@@ -1,0 +1,71 @@
+---
+
+- name: Assert 'android_studio_path' variable
+  ansible.builtin.assert:
+    that:
+      - android_studio_path is defined
+      - android_studio_path is string
+      - android_studio_path | length > 0
+
+
+- name: Assert 'android_studio_jdk' variable
+  ansible.builtin.assert:
+    that:
+      - android_studio_jdk is string
+      - android_studio_jdk | length > 0
+  when:
+    - android_studio_jdk is defined
+
+
+- name: Assert 'android_studio_clients' variable
+  ansible.builtin.assert:
+    that:
+      - android_studio_clients is iterable
+  when:
+    - android_studio_clients is defined
+
+
+- name: Validate 'android_studio_clients' schema
+  ansible.utils.validate:
+    data: "{{ android_studio_clients }}"
+    criteria:
+      - "{{ lookup('file',  './criteria/android_studio_clients_criteria.json') | from_json }}"
+    engine: ansible.utils.jsonschema
+  when:
+  - android_studio_clients is defined
+
+
+- name: Assert 'android_studio_primary' variable
+  ansible.builtin.assert:
+    that:
+      - android_studio_primary is mapping
+  when:
+    - android_studio_primary is defined
+
+
+- name: Validate 'android_studio_primary' schema
+  ansible.utils.validate:
+    data: "{{ android_studio_primary }}"
+    criteria:
+      - "{{ lookup('file',  './criteria/android_studio_primary_criteria.json') | from_json }}"
+    engine: ansible.utils.jsonschema
+  when:
+  - android_studio_primary is defined
+
+
+- name: Assert 'android_studio_canary' variable
+  ansible.builtin.assert:
+    that:
+      - android_studio_canary is mapping
+  when:
+    - android_studio_canary is defined
+
+
+- name: Validate 'android_studio_canary' schema
+  ansible.utils.validate:
+    data: "{{ android_studio_canary }}"
+    criteria:
+      - "{{ lookup('file',  './criteria/android_studio_primary_criteria.json') | from_json }}"
+    engine: ansible.utils.jsonschema
+  when:
+  - android_studio_canary is defined

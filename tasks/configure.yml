@@ -1,0 +1,78 @@
+---
+# The following tasks symlink the binary matching the supplied 'client'
+# to the global path as well as creating a desktop entry for it if
+# so requested.
+
+
+- name: Stat client version directory    
+  ansible.builtin.stat: 
+      path:  "{{ android_studio_path }}/{{ client.version }}"
+  register: client_version_dir
+  
+
+- name: Symlink client binary
+  ansible.builtin.file:
+    src: "{{ client_version_dir.stat.path }}/bin/studio.sh"
+    dest: "/usr/bin/{{ client.symlink | default(symlink) }}"
+    owner: "root"
+    group: "root"
+    mode: 0755
+    state: link
+  when:
+    - client_version_dir.stat.exists
+
+
+- name: Create desktop launcher for primary studio
+  ansible.builtin.copy:
+    src: android-studio.desktop
+    dest: "/usr/share/applications/{{ file_name }}.desktop"
+    force: no
+    owner: root
+    group: root
+    mode: 0664
+  when:
+    - client_version_dir.stat.exists
+    - client.desktop is defined
+    - client.desktop.create is true
+
+
+- name: Set desktop entry name
+  ansible.builtin.lineinfile: 
+    path: "/usr/share/applications/{{ file_name }}.desktop"
+    regexp: "^Name=" 
+    line: "Name={{ client.desktop.name | default('Android Studio') }}"
+  when:
+    - client_version_dir.stat.exists
+    - client.desktop is defined
+    - client.desktop.create is true
+
+
+- name: Set desktop entry icon
+  ansible.builtin.lineinfile: 
+    path: "/usr/share/applications/{{ file_name }}.desktop"
+    regexp: "^Icon=" 
+    line: "Icon={{ client_version_dir.stat.path }}/bin/studio.svg"
+  when:
+    - client_version_dir.stat.exists
+    - client.desktop is defined
+    - client.desktop.create is true
+
+
+- name: Set desktop entry binary
+  ansible.builtin.lineinfile: 
+    path: "/usr/share/applications/{{ file_name }}.desktop"
+    regexp: "^Exec=" 
+    line: "Exec=\"{{ client_version_dir.stat.path }}/bin/studio.sh\" %f"
+  when:
+    - client_version_dir.stat.exists
+    - client.desktop is defined
+    - client.desktop.create is true
+
+
+- name: Validate desktop entry
+  ansible.builtin.shell:
+    cmd: "desktop-file-validate /usr/share/applications/{{ file_name }}.desktop"
+  when:
+    - client_version_dir.stat.exists
+    - client.desktop is defined
+    - client.desktop.create is true

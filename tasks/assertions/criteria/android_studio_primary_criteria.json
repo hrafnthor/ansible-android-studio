@@ -1,0 +1,37 @@
+{
+    "type": "object",
+    "properties":
+    {
+        "version":
+        {
+            "type": "string"
+        },
+        "symlink":
+        {
+            "type": "string"
+        },
+        "desktop":
+        {
+            "type": "object",
+            "properties":
+            {
+                "create":
+                {
+                    "type": "boolean"
+                },
+                "name":
+                {
+                    "type": "string"
+                }
+            },
+            "required":
+            [
+                "create"
+            ]
+        }
+    },
+    "required":
+    [
+        "version"
+    ]
+}
