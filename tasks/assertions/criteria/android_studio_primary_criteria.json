@@ -1,0 +1,33 @@
+{
+    "type": "object",
+    "properties":
+    {
+        "version":
+        {
+            "type": "string"
+        },
+        "desktop":
+        {
+            "type": "object",
+            "properties":
+            {
+                "create":
+                {
+                    "type": "boolean"
+                },
+                "name":
+                {
+                    "type": "string"
+                }
+            },
+            "required":
+            [
+                "create"
+            ]
+        }
+    },
+    "required":
+    [
+        "version"
+    ]
+}

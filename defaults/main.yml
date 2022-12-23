@@ -1,2 +1,5 @@
 ---
-# defaults file for .
+# Contains default values used for the role
+
+# Defines the default installation path for Android Studio clients.
+android_studio_path: /opt/android-studio

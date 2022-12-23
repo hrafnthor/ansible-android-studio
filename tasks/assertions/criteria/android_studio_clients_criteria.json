@@ -1,0 +1,17 @@
+{
+	"type": "array",
+	"items": {
+		"type": "object",
+		"properties": {
+			"version": {
+				"type": "string"
+			},
+			"checksum": {
+				"type": "string"
+			}
+		},
+		"required": [
+			"version", "checksum"	
+		]
+	}
+}

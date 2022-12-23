@@ -1,2 +1,47 @@
 ---
-# tasks file for .
+# The following role attempts to download any requested Android Studio
+# versions and configure them on the system level.
+
+- name: Assert task variables
+  ansible.builtin.import_tasks: assertions/assert.yml
+  run_once: yes
+  delegate_to: localhost
+
+
+- name: Download clients
+  ansible.builtin.include_tasks: download.yml
+  loop: "{{ android_studio_clients }}"
+  loop_control:
+    loop_var: client
+  when: android_studio_clients | length > 0
+
+
+- name: Assign 'STUDIO_JDK' environment variable
+  ansible.builtin.lineinfile: 
+    path: /etc/profile.d/android.sh
+    regexp: "^export STUDIO_JDK=" 
+    line: "export STUDIO_JDK={{ android_studio_jdk }}"
+    create: yes
+    mode: 0644
+  when:
+    - android_studio_jdk is defined
+
+
+- name: Configure primary studio client
+  ansible.builtin.include_tasks: configure.yml
+  vars:
+    client: "{{ android_studio_primary }}"
+    binary_name: "astudio"
+    file_name: "android-studio" 
+  when:
+    - android_studio_primary is defined
+
+
+- name: Configure canary studio client
+  ansible.builtin.include_tasks: configure.yml
+  vars:
+    client: "{{ android_studio_canary }}"
+    binary_name: "astudioc"
+    file_name: "android-studio-canary"
+  when:
+    - android_studio_canary is defined

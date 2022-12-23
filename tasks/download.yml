@@ -1,0 +1,78 @@
+---
+ 
+
+- name: Fetch and install Android Studio version
+  block:
+
+  - name: Ensure 'android_studio_path' directory
+    ansible.builtin.file:
+      path: "{{ android_studio_path }}"
+      state: directory
+      modification_time: preserve
+      access_time: preserve
+      owner: "root"
+      group: "root"
+      mode: 0755
+
+
+  - name: Stat studio version directory    
+    ansible.builtin.stat: 
+      path:  "{{ android_studio_path }}/{{ client.version }}"
+    register: studio_version_dir
+
+
+  - name: Ensure temporary download directory
+    ansible.builtin.file:
+      path: "{{ android_studio_path }}/temp"
+      state: directory
+      modification_time: preserve
+      access_time: preserve
+      owner: "root"
+      group: "root"
+      mode: 0755
+    when:
+      - not studio_version_dir.stat.exists
+      
+
+  - name: Download studio client
+    ansible.builtin.get_url:
+      url: "https://redirector.gvt1.com/edgedl/android/studio/ide-zips/{{ client.version }}/android-studio-{{ client.version }}-linux.tar.gz"
+      dest: "{{ android_studio_path }}/temp/{{ client.version }}-linux.tar.gz"
+      checksum: "sha256: {{ client.checksum }}"
+    when: not studio_version_dir.stat.exists
+
+
+  - name: Ensure version directory
+    ansible.builtin.file:
+      path: "{{ android_studio_path }}/{{ client.version }}"
+      state: directory
+      modification_time: preserve
+      access_time: preserve
+      owner: "root"
+      group: "root"
+      mode: 0755
+
+
+  - name: Extract archive
+    ansible.builtin.unarchive:
+      remote_src: yes
+      src: "{{ android_studio_path }}/temp/{{ client.version }}-linux.tar.gz"
+      dest: "{{ android_studio_path }}/temp/"
+      owner: "root"
+      group: "root"
+      mode: 0755
+    when: not studio_version_dir.stat.exists
+
+
+  - name: Move archive contents to version folder
+    ansible.builtin.shell:
+      cmd: "mv {{ android_studio_path }}/temp/android-studio/* {{ android_studio_path }}/{{ client.version }}"
+    when: not studio_version_dir.stat.exists   
+
+
+  always:
+
+    - name: Cleanup temporary directory
+      ansible.builtin.file:
+        path: "{{ android_studio_path }}/temp"
+        state: absent
