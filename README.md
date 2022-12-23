@@ -1,4 +1,4 @@
-Role Name
+hth-android-studio
 =========
 
 This role can download and configure multiple Android Studio clients for use on a Linux machine.
