@@ -114,7 +114,7 @@ The following example playbook installs two different Android Studio clients and
         - version: "2022.2.1.9"
           symlink: "androidstudio"
   roles:
-     - hth-android-sdk
+     - hth-android-studio
 ```
 
 License
