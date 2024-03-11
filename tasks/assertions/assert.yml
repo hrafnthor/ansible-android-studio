@@ -29,7 +29,7 @@
   ansible.utils.validate:
     data: "{{ android_studio_clients }}"
     criteria:
-      - "{{ lookup('file',  './criteria/android_studio_clients_criteria.json') | from_json }}"
+      - "{{ lookup('file',  'assertions/criteria/android_studio_clients_criteria.json') | from_json }}"
     engine: ansible.utils.jsonschema
   when:
   - android_studio_clients is defined
@@ -47,7 +47,7 @@
   ansible.utils.validate:
     data: "{{ android_studio_primary }}"
     criteria:
-      - "{{ lookup('file',  './criteria/android_studio_primary_criteria.json') | from_json }}"
+      - "{{ lookup('file',  'assertions/criteria/android_studio_primary_criteria.json') | from_json }}"
     engine: ansible.utils.jsonschema
   when:
   - android_studio_primary is defined
@@ -65,7 +65,7 @@
   ansible.utils.validate:
     data: "{{ android_studio_canary }}"
     criteria:
-      - "{{ lookup('file',  './criteria/android_studio_primary_criteria.json') | from_json }}"
+      - "{{ lookup('file',  'assertions/criteria/android_studio_primary_criteria.json') | from_json }}"
     engine: ansible.utils.jsonschema
   when:
   - android_studio_canary is defined
