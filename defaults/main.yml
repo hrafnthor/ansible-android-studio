@@ -10,3 +10,6 @@ android_studio_default_environment_path: /etc/profile.d/android.sh
 
 # The default file path for the desktop file location
 android_studio_default_desktop_file_path: /usr/share/applications
+
+# The default file path for the symlinks location
+android_studio_default_symlink_path: /usr/bin

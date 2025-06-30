@@ -167,6 +167,10 @@
                         {
                             "$ref": "#/definitions/non-empty-string"
                         },
+                        "path":
+                        {
+                            "$ref": "#/definitions/non-empty-string"
+                        },
                         "remove":
                         {
                             "type": "boolean"

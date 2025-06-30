@@ -9,10 +9,14 @@
       path:  "{{ android_studio_client_version_path }}"
   register: android_studio_client_version_path_stat
 
+- name: "HTH | Android Studio | Set client symlink path"
+  ansible.builtin.set_fact:
+    android_studio_client_symlink_path: "{{ client.symlink.path | default(android_studio_default_symlink_path) }}/{{ client.symlink.name | default(symlink) }}"
+
 - name: "HTH | Android Studio | Add client symlink to global path"
   ansible.builtin.file:
     src: "{{ android_studio_client_version_path }}/bin/studio.sh"
-    dest: "/usr/bin/{{ client.symlink.name | default(symlink) }}"
+    dest: "{{ android_studio_client_symlink_path }}"
     owner: "root"
     group: "root"
     mode: 0755
@@ -23,7 +27,7 @@
 
 - name: "HTH | Android Studio | Remove client symlink from global path"
   ansible.builtin.file:
-    path: "/usr/bin/{{ client.symlink.name | default(symlink) }}"
+    path: "{{ android_studio_client_symlink_path }}"
     state: absent
   when:
     - client.symlink.remove is defined

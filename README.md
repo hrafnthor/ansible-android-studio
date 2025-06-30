@@ -6,13 +6,13 @@ This role can download and configure multiple Android Studio clients for use on 
 
 This role requires two separate tools be installed.
 
-First it requires the 'ansible.utils' collection be installed from Ansible-Galaxy via:
+First it requires the `ansible.utils` collection be installed from Ansible-Galaxy via:
 
 ```bash
 ansible-galaxy collection install ansible.utils
 ```
 
-Secondly it requires the jsonschema Python package be installed via:
+Secondly it requires the `jsonschema` Python package be installed via:
 
 ```bash
 pip install jsonschema
@@ -33,6 +33,7 @@ android_studio:
     version:    [string]            [required] The client version that should be marked as primary.
     symlink:                        If defined, will configure a symlink to the primary studio instance globally.
         name:   [string]                The name to give to the symlink, otherwise 'astudio' is used.
+        path:   [string]                The path to where the symlink should be created, else `android_studio_default_symlink_path`
         remove: [bool]                  If true, removes the symlink with the given name.
     desktop:                        If defined, will configure a desktop entry for the primary studio instance globally.
       name:     [string]                The name to give the desktop entry, otherwise 'Android Studio' is used.
@@ -42,6 +43,7 @@ android_studio:
     version:    [string]            [required] The client version that should be marked as primary.
     symlink:                        If defined, will configure a symlink to the primary studio instance globally.
         name:   [string]                The name to give to the symlink, otherwise 'astudioc' is used.
+        path:   [string]                The path to where the symlink should be created, else `android_studio_default_symlink_path`
         remove: [bool]                  If true, removes the symlink with the given name.
     desktop:                        If defined, will configure a desktop entry for the primary studio instance globally.
       name:     [string]                The name to give the desktop entry, otherwise 'Android Studio Canary' is used.
@@ -84,9 +86,11 @@ By default the clients will be installed under `/opt/android/studio` as defined 
 
 By default the location of the environment variables file is `/etc/profile.d/android.sh` as defined by the default variable `android_studio_default_environment_path`, unless the variable `android_studio.environment.location.path` is given. 
 
-By default all directories create will be owned by the user running the role, unless configured differently using variables such as `android_studio.location.owner | .group` or `android_studio.environment.location.owner | .group`. They are also given chmod `0755` by default.
+By default all directories created will be owned by the user running the role, unless configured differently using variables such as `android_studio.location.owner | .group` or `android_studio.environment.location.owner | .group`. They are also given chmod `0755` by default.
 
-By default the desktop file is placed at `/usr/share/applications` as defined by the default variable `android_studio_default_desktop_file_path`. 
+By default the desktop file is placed at `/usr/share/applications` as defined by the default variable `android_studio_default_desktop_file_path`.
+
+By default the symlinks are placed in `/usr/bin` as defined by the default variable `android_studio_default_symlink_path`, unless the variable `android_studio.(primary | canary).symlink.path` is given.
 
 
 ## Dependencies
@@ -118,56 +122,58 @@ This will allow any playbook run from this machine to use the role `hth-android-
 
 ## Example Playbook
 
-The following example playbook installs two different Android Studio clients and makes one the primary client and the other the canary client. The primary client has a desktop entry created, and with a different entry name then the default one. The canary version does not have a desktop entry created but overrides the name used for the symlinked launcher. The Java version to use for running Android Studio, no matter the client version, is set to OpenJDK 11.
+The following playbook installs two clients. Each is installed to the default location, but with guid `developers`. One client is configured as the primary studio client, while the other one is set as the canary client. Each are given custom descriptive names and keywords. The canary client is symlinked only for user `Hrafn`. The environment file is create only for user `Hrafn`, with one incorrect value being removed.
+
 
 ```yaml
 - hosts: all
     vars:
-    - android_studio:
-          clients:
-            - version: "2025.1.1.12"
-              checksum: "9aa40cdfd3de3c5616220ba4ccddd7e2b4c73d471dac54dcfce0bdc38b7ec093"
-            - version: "2025.1.2.6"
-              checksum: "04e529e084b3e5001d94420b1233967b2526bbf54755f82b4be02c08ca359fbd"
-          primary:
-            version: "2025.1.1.12"
-            symlink: 
-              name: "astudio"
-            desktop:
-              name: "Primary"
-              keywords: 
-                - "android"
-                - "studio"
-                - "primary"
-          canary:
-            version: "2025.1.2.6"
-            symlink: "astudioc"
-            desktop:
-              name: "Canary"
-              keywords: 
-                - "android"
-                - "studio"
-                - "canary"
+      android_studio:
+        clients:
+          - version: "2025.1.1.12"
+            checksum: "9aa40cdfd3de3c5616220ba4ccddd7e2b4c73d471dac54dcfce0bdc38b7ec093"
+          - version: "2025.1.2.6"
+            checksum: "04e529e084b3e5001d94420b1233967b2526bbf54755f82b4be02c08ca359fbd"
+        primary:
+          version: "2025.1.1.12"
+          symlink:
+            name: "astudio"
+          desktop:
+            name: "Primary"
+            keywords:
+              - "android"
+              - "studio"
+              - "primary"
+        canary:
+          version: "2025.1.2.6"
+          symlink:
+            name: "astudioc"
+            path: "/home/hrafn/.local/bin"
+          desktop:
+            name: "Canary"
+            keywords:
+              - "android"
+              - "studio"
+              - "canary"
+        location:
+          group: "developers"
+          mode: "2775"
+        environment:
           location:
-            path: "/opt/android/studio"
-            group: "developers"
-            mode: "2775"
-          environment:
-            location:
-              path: "/home/hrafn/.env.d/android.sh"
-              owner: "hrafn"
-              group: "hrafn"
-              group: 0644
-            jdk_path: 
-              value: "/usr/lib/jvm/java-11-openjdk-amd64"
-            sdk_path: 
-              value: "/usr/lib/android/sdk"              
-            preferences_path:
-              value: "$HOME/.android"
-            emulator_path:
-              value: "$HOME/.android/emulators"
-            avd_path: 
-              value: "$HOME/.android/avd"
+            path: "/home/hrafn/.env.d"
+            owner: "hrafn"
+            group: "hrafn"
+          jdk_path:
+            value: "/tmp/not-correct-path/bin"
+            remove: true
+          sdk_path:
+            value: "/usr/lib/android/sdk"
+          preferences_path:
+            value: "$HOME/.android"
+          emulator_path:
+            value: "$HOME/.android/emulators"
+          avd_path:
+            value: "$HOME/.android/avd"
   roles:
      - hth-android-studio
 ```
