@@ -1,5 +1,12 @@
----
-# Contains default values used for the role
 
-# Defines the default installation path for Android Studio clients.
-android_studio_path: /opt/android-studio
+# The url at which Android Studio archives can be found
+android_studio_archive_url: https://redirector.gvt1.com/edgedl/android/studio/ide-zips
+
+# The default installation path for android studio versions
+android_studio_default_path: /opt/android/studio
+
+# The default file path for the android environment variables
+android_studio_default_environment_path: /etc/profile.d/android.sh
+
+# The default file path for the desktop file location
+android_studio_default_desktop_file_path: /usr/share/applications

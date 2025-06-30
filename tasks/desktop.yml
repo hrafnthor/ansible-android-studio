@@ -1,0 +1,103 @@
+---
+
+- name: "HTH | Android Studio | Set client version path"
+  ansible.builtin.set_fact:
+    android_studio_client_version_path: "{{ android_studio_path }}/{{ client.version }}"
+
+- name: "HTH | Android Studio | Stat client version path"
+  ansible.builtin.stat: 
+      path:  "{{ android_studio_client_version_path }}"
+  register: android_studio_client_version_path_stat
+
+- name: "HTH | Android Studio | Add client symlink to global path"
+  ansible.builtin.file:
+    src: "{{ android_studio_client_version_path }}/bin/studio.sh"
+    dest: "/usr/bin/{{ client.symlink.name | default(symlink) }}"
+    owner: "root"
+    group: "root"
+    mode: 0755
+    state: link
+  when:
+    - android_studio_client_version_path_stat.stat.exists
+    - client.symlink.remove is undefined or not client.symlink.remove
+
+- name: "HTH | Android Studio | Remove client symlink from global path"
+  ansible.builtin.file:
+    path: "/usr/bin/{{ client.symlink.name | default(symlink) }}"
+    state: absent
+  when:
+    - client.symlink.remove is defined
+    - client.symlink.remove
+
+- name: "HTH | Android Studio | Set desktop file path"
+  ansible.builtin.set_fact:
+    android_studio_client_version_desktop_path: "{{ android_studio_default_desktop_file_path }}/{{ file_name }}.desktop"
+
+- name: "HTH | Android Studio | Create desktop entry"
+  ansible.builtin.copy:
+    src: android-studio.desktop
+    dest: "{{ android_studio_client_version_desktop_path }}"
+    owner: root
+    group: root
+    mode: 0664
+  when:
+    - client.desktop is defined
+    - client.desktop.remove is undefined or not client.desktop.remove
+    - android_studio_client_version_path_stat.stat.exists
+
+- name: "HTH | Android Studio | Set desktop entry name"
+  ansible.builtin.lineinfile: 
+    path: "{{ android_studio_client_version_desktop_path }}"
+    regexp: "^Name=" 
+    line: "Name={{ client.desktop.name | default(default_desktop_entry_name) }}"
+  when:
+    - client.desktop is defined
+    - client.desktop.remove is undefined or not client.desktop.remove
+    - android_studio_client_version_path_stat.stat.exists
+
+- name: "HTH | Android Studio | Set desktop entry icon"
+  ansible.builtin.lineinfile: 
+    path: "{{ android_studio_client_version_desktop_path }}"
+    regexp: "^Icon=" 
+    line: "Icon={{ android_studio_client_version_path }}/bin/studio.svg"
+  when:
+    - client.desktop is defined
+    - client.desktop.remove is undefined or not client.desktop.remove
+    - android_studio_client_version_path_stat.stat.exists
+
+- name: "HTH | Android Studio | Set desktop entry binary"
+  ansible.builtin.lineinfile: 
+    path: "{{ android_studio_client_version_desktop_path }}"
+    regexp: "^Exec=" 
+    line: "Exec=\"{{ android_studio_client_version_path }}/bin/studio\""
+  when:
+    - client.desktop is defined
+    - client.desktop.remove is undefined or not client.desktop.remove
+    - android_studio_client_version_path_stat.stat.exists
+
+- name: "HTH | Android Studio | Set desktop entry keywords"
+  ansible.builtin.lineinfile: 
+    path: "{{ android_studio_client_version_desktop_path }}"
+    regexp: "^Keywords=" 
+    line: "Keywords={{ client.desktop.keywords | join(';') }}"
+  when:
+    - client.desktop is defined
+    - client.desktop.keywords is defined
+    - client.desktop.remove is undefined or not client.desktop.remove
+    - android_studio_client_version_path_stat.stat.exists
+
+- name: "HTH | Android Studio | Validate desktop entry"
+  ansible.builtin.shell:
+    cmd: "desktop-file-validate {{ android_studio_client_version_desktop_path }}"
+  when:
+    - client.desktop is defined
+    - client.desktop.remove is undefined or not client.desktop.remove
+    - android_studio_client_version_path_stat.stat.exists
+
+- name: "HTH | Android Studio | Remove desktop entry"
+  ansible.builtin.file:
+    path: "{{ android_studio_client_version_desktop_path }}"
+    state: absent
+  when:
+    - client.desktop is defined
+    - client.desktop.remove is defined and client.desktop.remove
