@@ -1,0 +1,210 @@
+{
+    "title": "android_studio",
+    "description": "Schema for Android Studio installation",
+    "type": "object",
+    "properties":
+    {
+        "clients":
+        {
+            "type": "array",
+            "items":
+            {
+                "type": "object",
+                "properties":
+                {
+                    "version":
+                    {
+                        "$ref": "#/definitions/non-empty-string"
+                    },
+                    "checksum":
+                    {
+                        "$ref": "#/definitions/non-empty-string"
+                    },
+                    "remove":
+                    {
+                        "type": "boolean"
+                    }
+                },
+                "required":
+                [
+                    "version",
+                    "checksum"
+                ]
+            }
+        },
+        "primary":
+        {
+            "$ref": "#/definitions/client_entry"
+        },
+        "canary":
+        {
+            "$ref": "#/definitions/client_entry"
+        },
+        "location":
+        {
+            "type": "object",
+            "properties":
+            {
+                "path":
+                {
+                    "$ref": "#/definitions/non-empty-string"
+                },
+                "owner":
+                {
+                    "$ref": "#/definitions/non-empty-string"
+                },
+                "group":
+                {
+                    "$ref": "#/definitions/non-empty-string"
+                },
+                "mode":
+                {
+                    "$ref": "#/definitions/non-empty-string"
+                }
+            }
+        },
+        "environment":
+        {
+            "type": "object",
+            "properties":
+            {
+                "location":
+                {
+                    "type": "object",
+                    "properties":
+                    {
+                        "path":
+                        {
+                            "$ref": "#/definitions/non-empty-string"
+                        },
+                        "owner":
+                        {
+                            "$ref": "#/definitions/non-empty-string"
+                        },
+                        "group":
+                        {
+                            "$ref": "#/definitions/non-empty-string"
+                        }
+                    },
+                    "required":
+                    [
+                        "path"
+                    ]
+                },
+                "jdk_path":
+                {
+                    "$ref": "#/definitions/environment_entry"
+                },
+                "sdk_path":
+                {
+                    "$ref": "#/definitions/environment_entry"
+                },
+                "preferences_path":
+                {
+                    "$ref": "#/definitions/environment_entry"
+                },
+                "emulator_path":
+                {
+                    "$ref": "#/definitions/environment_entry"
+                },
+                "avd_path":
+                {
+                    "$ref": "#/definitions/environment_entry"
+                },
+                "remove":
+                {
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "definitions":
+    {
+        "non-empty-string":
+        {
+            "type": "string",
+            "minLength": 1
+        },
+        "non-empty-string-array":
+        {
+            "type": "array",
+            "minItems": 1,
+            "items":
+            {
+                "$ref": "#/definitions/non-empty-string"
+            }
+        },
+        "environment_entry":
+        {
+            "type": "object",
+            "properties":
+            {
+                "value":
+                {
+                    "$ref": "#/definitions/non-empty-string"
+                },
+                "remove":
+                {
+                    "type": "boolean"
+                }
+            }
+        },
+        "client_entry":
+        {
+            "type": "object",
+            "properties":
+            {
+                "version":
+                {
+                    "$ref": "#/definitions/non-empty-string"
+                },
+                "symlink":
+                {
+                    "type": "object",
+                    "properties":
+                    {
+                        "name":
+                        {
+                            "$ref": "#/definitions/non-empty-string"
+                        },
+                        "path":
+                        {
+                            "$ref": "#/definitions/non-empty-string"
+                        },
+                        "remove":
+                        {
+                            "type": "boolean"
+                        }
+                    },
+                    "required":
+                    [
+                        "name"
+                    ]
+                },
+                "desktop":
+                {
+                    "type": "object",
+                    "properties":
+                    {
+                        "name":
+                        {
+                            "$ref": "#/definitions/non-empty-string"
+                        },
+                        "keywords":
+                        {
+                            "$ref": "#/definitions/non-empty-string-array"
+                        },
+                        "remove":
+                        {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            },
+            "required":
+            [
+                "version"
+            ]
+        }
+    }
+}

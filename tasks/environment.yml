@@ -1,0 +1,119 @@
+---
+
+- name: "HTH | Android Studio | Set environment file path"
+  ansible.builtin.set_fact:
+    android_environment_file_path: "{{ android_studio.environment.location.path | default(android_studio_default_environment_path) }}"
+  when:
+    - android_studio is defined
+    - android_studio.environment is defined
+
+- name: "HTH | Android Studio | Set environment file owner"
+  ansible.builtin.set_fact:
+    android_environment_file_owner: "{{ android_studio.environment.location.owner | default('root') }}"
+  when:
+    - android_studio is defined
+    - android_studio.environment is defined
+
+- name: "HTH | Android Studio | Set environment file group"
+  ansible.builtin.set_fact:
+    android_environment_file_group: "{{ android_studio.environment.location.group | default(android_environment_file_owner) }}"
+  when:
+    - android_studio is defined
+    - android_studio.environment is defined
+
+- name: "HTH | Android Studio | Set environment file mode"
+  ansible.builtin.set_fact:
+    android_environment_file_mode: "0644"
+  when:
+    - android_studio is defined
+    - android_studio.environment is defined
+
+- name: "HTH | Android Studio | Assign 'STUDIO_JDK' environment variable"
+  ansible.builtin.lineinfile: 
+    path: "{{ android_environment_file_path }}"
+    regexp: "^export STUDIO_JDK=" 
+    line: "export STUDIO_JDK={{ android_studio.environment.jdk_path.value }}"
+    state: "{{ 'absent' if (android_studio.environment.jdk_path.remove) else 'present' }}"
+    create: yes
+    mode: "{{ android_environment_file_mode }}"
+    owner: "{{ android_environment_file_owner }}"
+    group: "{{ android_environment_file_group }}"
+  when:
+    - android_studio is defined
+    - android_studio.environment is defined
+    - android_studio.environment.jdk_path is defined
+    - android_studio.environment.remove is undefined or not android_studio.environment.remove
+
+- name: "HTH | Android Studio | Assign 'ANDROID_HOME' environment variable"
+  ansible.builtin.lineinfile: 
+    path: "{{ android_environment_file_path }}"
+    regexp: "^export ANDROID_HOME=" 
+    line: "export ANDROID_HOME={{ android_studio.environment.sdk_path.value }}"
+    state: "{{ 'absent' if (android_studio.environment.sdk_path.remove) else 'present' }}"
+    create: yes
+    mode: "{{ android_environment_file_mode }}"
+    owner: "{{ android_environment_file_owner }}"
+    group: "{{ android_environment_file_group }}"
+  when:
+    - android_studio is defined
+    - android_studio.environment is defined
+    - android_studio.environment.sdk_path is defined
+    - android_studio.environment.remove is undefined or not android_studio.environment.remove
+
+- name: "HTH | Android Studio | Assign 'ANDROID_USER_HOME' environment variable"
+  ansible.builtin.lineinfile: 
+    path: "{{ android_environment_file_path }}"
+    regexp: "^export ANDROID_USER_HOME=" 
+    line: "export ANDROID_USER_HOME={{ android_studio.environment.preferences_path.value }}"
+    state: "{{ 'absent' if (android_studio.environment.preferences_path.remove) else 'present' }}"
+    create: yes
+    mode: "{{ android_environment_file_mode }}"
+    owner: "{{ android_environment_file_owner }}"
+    group: "{{ android_environment_file_group }}"
+  when:
+    - android_studio is defined
+    - android_studio.environment is defined
+    - android_studio.environment.preferences_path is defined
+    - android_studio.environment.remove is undefined or not android_studio.environment.remove
+
+- name: "HTH | Android Studio | Assign 'ANDROID_EMULATOR_HOME' environment variable"
+  ansible.builtin.lineinfile: 
+    path: "{{ android_environment_file_path }}"
+    regexp: "^export ANDROID_EMULATOR_HOME=" 
+    line: "export ANDROID_EMULATOR_HOME={{ android_studio.environment.emulator_path.value }}"
+    state: "{{ 'absent' if (android_studio.environment.emulator_path.remove) else 'present' }}"
+    create: yes
+    mode: "{{ android_environment_file_mode }}"
+    owner: "{{ android_environment_file_owner }}"
+    group: "{{ android_environment_file_group }}"
+  when:
+    - android_studio is defined
+    - android_studio.environment is defined
+    - android_studio.environment.emulator_path is defined
+    - android_studio.environment.remove is undefined or not android_studio.environment.remove
+
+- name: "HTH | Android Studio | Assign 'ANDROID_AVD_HOME' environment variable"
+  ansible.builtin.lineinfile: 
+    path: "{{ android_environment_file_path }}"
+    regexp: "^export ANDROID_AVD_HOME=" 
+    line: "export ANDROID_AVD_HOME={{ android_studio.environment.avd_path.value }}"
+    state: "{{ 'absent' if (android_studio.environment.avd_path.remove) else 'present' }}"
+    create: yes
+    mode: "{{ android_environment_file_mode }}"
+    owner: "{{ android_environment_file_owner }}"
+    group: "{{ android_environment_file_group }}"
+  when:
+    - android_studio is defined
+    - android_studio.environment is defined
+    - android_studio.environment.avd_path is defined
+    - android_studio.environment.remove is undefined or not android_studio.environment.remove
+
+- name: "HTH | Android Studio | Remove environment file"
+  ansible.builtin.file:
+    path: "{{ android_environment_file_path }}"
+    state: absent
+  when:
+    - android_studio is defined
+    - android_studio.environment is defined
+    - android_studio.environment.remove is defined
+    - android_studio.environment.remove
