@@ -12,34 +12,34 @@
 
 - name: "HTH | Android Studio | Set installation path"
   ansible.builtin.set_fact:
-    android_studio_path: "{{ android_studio.location.path | default(android_studio_default_path) }}"
+    hth_android_studio_path: "{{ android_studio.location.path | default(hth_android_studio_default_path) }}"
   when:
     - android_studio is defined
 
 - name: "HTH | Android Studio | Set installation path owner"
   ansible.builtin.set_fact:
-    android_studio_path_owner: "{{ android_studio.location.owner | default('root') }}"
+    hth_android_studio_path_owner: "{{ android_studio.location.owner | default('root') }}"
   when:
     - android_studio is defined
 
 - name: "HTH | Android Studio | Set installation path group"
   ansible.builtin.set_fact:
-    android_studio_path_group: "{{ android_studio.location.group | default(android_studio.location.owner) | default('root') }}"
+    hth_android_studio_path_group: "{{ android_studio.location.group | default(android_studio.location.owner) | default('root') }}"
   when:
     - android_studio is defined
 
 - name: "HTH | Android Studio | Set installation path mode"
   ansible.builtin.set_fact:
-    android_studio_path_mode: "{{ android_studio.location.mode | default('0755') }}"
+    hth_android_studio_path_mode: "{{ android_studio.location.mode | default('0755') }}"
   when:
     - android_studio is defined
 
 - name: "HTH | Android Studio | Ensure installation path"
   ansible.builtin.file:
-    path: "{{ android_studio_path }}"
-    owner: "{{ android_studio_path_owner }}"
-    group: "{{ android_studio_path_group }}"
-    mode: "{{ android_studio_path_mode }}"
+    path: "{{ hth_android_studio_path }}"
+    owner: "{{ hth_android_studio_path_owner }}"
+    group: "{{ hth_android_studio_path_group }}"
+    mode: "{{ hth_android_studio_path_mode }}"
     modification_time: preserve
     access_time: preserve
     state: directory
@@ -82,4 +82,4 @@
     default_desktop_entry_name: "Android Studio Canary"
   when:
     - android_studio is defined
-    - android_studio.canary is defined  
+    - android_studio.canary is defined

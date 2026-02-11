@@ -1,15 +1,15 @@
 
 # The url at which Android Studio archives can be found
-android_studio_archive_url: https://redirector.gvt1.com/edgedl/android/studio/ide-zips
+hth_android_studio_archive_url: https://edgedl.me.gvt1.com/android/studio/ide-zips
 
 # The default installation path for android studio versions
-android_studio_default_path: /opt/android/studio
+hth_android_studio_default_path: /opt/android/studio
 
 # The default file path for the android environment variables
-android_studio_default_environment_path: /etc/profile.d/android.sh
+hth_android_studio_default_environment_path: /etc/profile.d/android.sh
 
 # The default file path for the desktop file location
-android_studio_default_desktop_file_path: /usr/share/applications
+hth_android_studio_default_desktop_file_path: /usr/share/applications
 
 # The default file path for the symlinks location
-android_studio_default_symlink_path: /usr/bin
+hth_android_studio_default_symlink_path: /usr/bin
