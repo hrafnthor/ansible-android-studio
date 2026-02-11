@@ -27,6 +27,7 @@ All parameters are optional unless otherwise stated.
 android_studio:
   clients:                      A list of version definitions to install or remove.
     - version:  [string]            [required] The version number for the Android Studio client to install.
+      codename: [string]            If the remote artifact is named using a different codename than just the version, i.e 'android-studio-panda2-canary1-linux.tar.gz' instead of 'android-studio-2025.3.1.5-linux.tar.gz' then the codename should be set to 'panda2-canary1'. Otherwise the version will be used. See Google's own archive page for details.
       checksum: [string]            [required] The checksum for the version number archive being installed. See information below.
       remove:   [bool]              If true, no archive will be downloaded and any client matching the 'version' value will be removed.
   primary:                      The client that should be configured to be primary.

@@ -21,7 +21,7 @@
 
   - name: "HTH | Android Studio | Download archive"
     ansible.builtin.get_url:
-      url: "{{ hth_android_studio_archive_url }}/{{ client.version }}/android-studio-{{ client.version }}-linux.tar.gz"
+      url: "{{ hth_android_studio_archive_url }}/{{ client.version }}/android-studio-{{ client.codename | default(client.version) }}-linux.tar.gz"
       dest: "{{ hth_android_studio_archive_path }}"
       checksum: "sha256: {{ client.checksum }}"
     register: client_archive_download_state

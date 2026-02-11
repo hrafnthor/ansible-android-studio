@@ -16,6 +16,10 @@
                     {
                         "$ref": "#/definitions/non-empty-string"
                     },
+                    "codename": {
+                        "description": "Used for the artifact download url generation, if the codename is different from the version.",
+                        "$ref": "#/definitions/non-empty-string"
+                    },
                     "checksum":
                     {
                         "$ref": "#/definitions/non-empty-string"
