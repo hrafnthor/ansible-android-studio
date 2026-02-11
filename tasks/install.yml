@@ -5,76 +5,76 @@
 
   - name: "HTH | Android Studio | Set client path"
     ansible.builtin.set_fact:
-      android_studio_client_path: "{{ android_studio_path }}/{{ client.version }}"      
-  
+      hth_android_studio_client_path: "{{ hth_android_studio_path }}/{{ client.version }}"
+
   - name: "HTH | Android Studio | Stat client path"
-    ansible.builtin.stat: 
-      path:  "{{ android_studio_client_path }}"
-    register: android_studio_client_path_stat
+    ansible.builtin.stat:
+      path:  "{{ hth_android_studio_client_path }}"
+    register: hth_android_studio_client_path_stat
 
   - name: "HTH | Android Studio | Set archive download path"
     ansible.builtin.set_fact:
-      android_studio_archive_path: "/tmp/android-studio-{{ client.version }}-linux.tar.gz"      
+      hth_android_studio_archive_path: "/tmp/android-studio-{{ client.version }}-linux.tar.gz"
     when:
-      - not android_studio_client_path_stat.stat.exists
+      - not hth_android_studio_client_path_stat.stat.exists
       - client.remove is undefined or not client.remove
 
   - name: "HTH | Android Studio | Download archive"
     ansible.builtin.get_url:
-      url: "{{ android_studio_archive_url }}/{{ client.version }}/android-studio-{{ client.version }}-linux.tar.gz"
-      dest: "{{ android_studio_archive_path }}"
+      url: "{{ hth_android_studio_archive_url }}/{{ client.version }}/android-studio-{{ client.codename | default(client.version) }}-linux.tar.gz"
+      dest: "{{ hth_android_studio_archive_path }}"
       checksum: "sha256: {{ client.checksum }}"
     register: client_archive_download_state
     when:
-      - not android_studio_client_path_stat.stat.exists
+      - not hth_android_studio_client_path_stat.stat.exists
       - client.remove is undefined or not client.remove
 
   - name: "HTH | Android Studio | Ensure client directory"
     ansible.builtin.file:
-      path: "{{ android_studio_client_path }}"
-      owner: "{{ android_studio_path_owner }}"
-      group: "{{ android_studio_path_group }}"
-      mode: "{{ android_studio_path_mode }}"
+      path: "{{ hth_android_studio_client_path }}"
+      owner: "{{ hth_android_studio_path_owner }}"
+      group: "{{ hth_android_studio_path_group }}"
+      mode: "{{ hth_android_studio_path_mode }}"
       modification_time: preserve
       access_time: preserve
       state: directory
     when:
-      - not android_studio_client_path_stat.stat.exists
+      - not hth_android_studio_client_path_stat.stat.exists
       - client.remove is undefined or not client.remove
 
   - name: "HTH | Android Studio | Extract client archive"
     ansible.builtin.unarchive:
-      src: "{{ android_studio_archive_path }}"
-      dest: "{{ android_studio_client_path }}"
-      owner: "{{ android_studio_path_owner }}"
-      group: "{{ android_studio_path_group }}"
+      src: "{{ hth_android_studio_archive_path }}"
+      dest: "{{ hth_android_studio_client_path }}"
+      owner: "{{ hth_android_studio_path_owner }}"
+      group: "{{ hth_android_studio_path_group }}"
       remote_src: yes
       extra_opts: [--strip-components=1]
     when:
-      - not android_studio_client_path_stat.stat.exists
+      - not hth_android_studio_client_path_stat.stat.exists
       - client.remove is undefined or not client.remove
 
   - name: "HTH | Android Studio | Remove client version"
     ansible.builtin.file:
-      path: "{{ android_studio_client_path }}"
+      path: "{{ hth_android_studio_client_path }}"
       state: absent
     when:
       - client.remove is defined
       - client.remove
 
   rescue:
-    
-    # On installation failure delete client directory to avoid a lock when running role again. 
+
+    # On installation failure delete client directory to avoid a lock when running role again.
     - name: "HTH | Android Studio | Delete client directory"
       ansible.builtin.file:
-        path: "{{ android_studio_client_path }}"
+        path: "{{ hth_android_studio_client_path }}"
         state: absent
 
   always:
 
     - name: "HTH | Android Studio | Delete downloaded archive"
       ansible.builtin.file:
-        path: "{{ android_studio_archive_path }}"
+        path: "{{ hth_android_studio_archive_path }}"
         state: absent
       when:
         - client_archive_download_state is defined
