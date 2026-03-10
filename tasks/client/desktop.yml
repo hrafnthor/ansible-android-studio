@@ -1,0 +1,72 @@
+---
+- name: "HTH | Android Studio | Set desktop file path"
+  ansible.builtin.set_fact:
+    hth_android_studio_client_desktop_path: "{{ hth_android_studio_default_desktop_file_path }}/{{ client.desktop.name | default('Android Studio ' + client.version) }}.desktop"
+
+- name: "HTH | Android Studio | Create desktop entry"
+  ansible.builtin.copy:
+    src: android-studio.desktop
+    dest: "{{ hth_android_studio_client_desktop_path }}"
+    owner: root
+    group: root
+    mode: 0664
+  when:
+    - client.desktop is defined
+    - client.desktop.remove is undefined or not client.desktop.remove
+    - client.remove is undefined or not client.remove
+
+- name: "HTH | Android Studio | Set desktop entry name"
+  ansible.builtin.lineinfile:
+    path: "{{ hth_android_studio_client_desktop_path }}"
+    regexp: "^Name="
+    line: "Name={{ client.desktop.name | default(default_desktop_entry_name) }}"
+  when:
+    - client.desktop is defined
+    - client.desktop.remove is undefined or not client.desktop.remove
+    - client.remove is undefined or not client.remove
+
+- name: "HTH | Android Studio | Set desktop entry icon"
+  ansible.builtin.lineinfile:
+    path: "{{ hth_android_studio_client_desktop_path }}"
+    regexp: "^Icon="
+    line: "Icon={{ hth_android_studio_client_path }}/bin/studio.svg"
+  when:
+    - client.desktop is defined
+    - client.desktop.remove is undefined or not client.desktop.remove
+    - client.remove is undefined or not client.remove
+
+- name: "HTH | Android Studio | Set desktop entry binary"
+  ansible.builtin.lineinfile:
+    path: "{{ hth_android_studio_client_desktop_path }}"
+    regexp: "^Exec="
+    line: "Exec=\"{{ hth_android_studio_client_path }}/bin/studio\""
+  when:
+    - client.desktop is defined
+    - client.desktop.remove is undefined or not client.desktop.remove
+    - client.remove is undefined or not client.remove
+
+- name: "HTH | Android Studio | Set desktop entry keywords"
+  ansible.builtin.lineinfile:
+    path: "{{ hth_android_studio_client_desktop_path }}"
+    regexp: "^Keywords="
+    line: "Keywords={{ client.desktop.keywords | join(';') }}"
+  when:
+    - client.desktop is defined
+    - client.desktop.keywords is defined
+    - client.desktop.remove is undefined or not client.desktop.remove
+    - client.remove is undefined or not client.remove
+
+- name: "HTH | Android Studio | Validate desktop entry"
+  ansible.builtin.shell:
+    cmd: "desktop-file-validate {{ hth_android_studio_client_desktop_path }}"
+  when:
+    - client.desktop is defined
+    - client.desktop.remove is undefined or not client.desktop.remove
+    - client.remove is undefined or not client.remove
+
+- name: "HTH | Android Studio | Remove desktop entry"
+  ansible.builtin.file:
+    path: "{{ hth_android_studio_client_desktop_path }}"
+    state: absent
+  when:
+    - (client.desktop is defined and client.desktop.remove is defined and client.desktop.remove) or (client.remove is defined and client.remove)

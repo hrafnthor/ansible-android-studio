@@ -46,8 +46,8 @@
   when:
     - android_studio is defined
 
-- name: "HTH | Android Studio | Install clients"
-  ansible.builtin.include_tasks: install.yml
+- name: "HTH | Android Studio | Manage clients"
+  ansible.builtin.include_tasks: client/main.yml
   loop: "{{ android_studio.clients }}"
   loop_control:
     loop_var: client
@@ -61,25 +61,3 @@
   when:
     - android_studio is defined
     - android_studio.environment is defined
-
-- name: "HTH | Android Studio | Create primary desktop entry"
-  ansible.builtin.include_tasks: desktop.yml
-  vars:
-    client: "{{ android_studio.primary }}"
-    default_symlink_name: "astudio"
-    file_name: "android-studio"
-    default_desktop_entry_name: "Android Studio"
-  when:
-    - android_studio is defined
-    - android_studio.primary is defined
-
-- name: "HTH | Android Studio | Create canary desktop entry"
-  ansible.builtin.include_tasks: desktop.yml
-  vars:
-    client: "{{ android_studio.canary }}"
-    default_symlink_name: "astudioc"
-    file_name: "android-studio-canary"
-    default_desktop_entry_name: "Android Studio Canary"
-  when:
-    - android_studio is defined
-    - android_studio.canary is defined

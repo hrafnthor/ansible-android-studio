@@ -16,7 +16,8 @@
                     {
                         "$ref": "#/definitions/non-empty-string"
                     },
-                    "codename": {
+                    "codename":
+                    {
                         "description": "Used for the artifact download url generation, if the codename is different from the version.",
                         "$ref": "#/definitions/non-empty-string"
                     },
@@ -27,6 +28,25 @@
                     "remove":
                     {
                         "type": "boolean"
+                    },
+                    "desktop":
+                    {
+                        "type": "object",
+                        "properties":
+                        {
+                            "name":
+                            {
+                                "$ref": "#/definitions/non-empty-string"
+                            },
+                            "keywords":
+                            {
+                                "$ref": "#/definitions/non-empty-string-array"
+                            },
+                            "remove":
+                            {
+                                "type": "boolean"
+                            }
+                        }
                     }
                 },
                 "required":
@@ -35,14 +55,6 @@
                     "checksum"
                 ]
             }
-        },
-        "primary":
-        {
-            "$ref": "#/definitions/client_entry"
-        },
-        "canary":
-        {
-            "$ref": "#/definitions/client_entry"
         },
         "location":
         {
@@ -152,63 +164,6 @@
                     "type": "boolean"
                 }
             }
-        },
-        "client_entry":
-        {
-            "type": "object",
-            "properties":
-            {
-                "version":
-                {
-                    "$ref": "#/definitions/non-empty-string"
-                },
-                "symlink":
-                {
-                    "type": "object",
-                    "properties":
-                    {
-                        "name":
-                        {
-                            "$ref": "#/definitions/non-empty-string"
-                        },
-                        "path":
-                        {
-                            "$ref": "#/definitions/non-empty-string"
-                        },
-                        "remove":
-                        {
-                            "type": "boolean"
-                        }
-                    },
-                    "required":
-                    [
-                        "name"
-                    ]
-                },
-                "desktop":
-                {
-                    "type": "object",
-                    "properties":
-                    {
-                        "name":
-                        {
-                            "$ref": "#/definitions/non-empty-string"
-                        },
-                        "keywords":
-                        {
-                            "$ref": "#/definitions/non-empty-string-array"
-                        },
-                        "remove":
-                        {
-                            "type": "boolean"
-                        }
-                    }
-                }
-            },
-            "required":
-            [
-                "version"
-            ]
         }
     }
 }
