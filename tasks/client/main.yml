@@ -1,0 +1,33 @@
+- name: "HTH | Android Studio | Set client installation path"
+  ansible.builtin.set_fact:
+    hth_android_studio_client_path: "{{ hth_android_studio_path }}/{{ client.version }}"
+
+- name: "HTH | Android Studio | Stat client install directory"
+  ansible.builtin.stat:
+    path:  "{{ hth_android_studio_client_path }}"
+  register: hth_android_studio_client_version_dir_state
+
+- name: "HTH | Android Studio | Stat client install directory contents"
+  ansible.builtin.find:
+    paths: "{{ hth_android_studio_client_path }}"
+    file_type: any
+  register: hth_android_studio_client_version_content_state
+  when:
+    - hth_android_studio_client_version_dir_state.stat.exists
+
+- name: "HTH | Android Studio | Install client"
+  ansible.builtin.include_tasks: install.yml
+  when:
+    - not hth_android_studio_client_version_dir_state.stat.exists or (hth_android_studio_client_version_content_state.files | length == 0)
+    - client.remove is not defined or not client.remove
+
+- name: "HTH | Android Studio | Manage desktop entry"
+  ansible.builtin.include_tasks: desktop.yml
+
+- name: "HTH | Android Studio | Remove client"
+  ansible.builtin.file:
+    path: "{{ hth_android_studio_client_path }}"
+    state: absent
+  when:
+    - client.remove is defined
+    - client.remove

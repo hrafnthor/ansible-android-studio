@@ -11,5 +11,5 @@ hth_android_studio_default_environment_path: /etc/profile.d/android.sh
 # The default file path for the desktop file location
 hth_android_studio_default_desktop_file_path: /usr/share/applications
 
-# The default file path for the symlinks location
-hth_android_studio_default_symlink_path: /usr/bin
+# Indicates that by default the downloaded archive should be deleted after installation
+hth_android_studio_default_cleanup_archive: true
