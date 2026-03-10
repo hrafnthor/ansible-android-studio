@@ -27,29 +27,13 @@ All parameters are optional unless otherwise stated.
 android_studio:
   clients:                      A list of version definitions to install or remove.
     - version:  [string]            [required] The version number for the Android Studio client to install.
-      codename: [string]            If the remote artifact is named using a different codename than just the version, i.e 'android-studio-panda2-canary1-linux.tar.gz' instead of 'android-studio-2025.3.1.5-linux.tar.gz' then the codename should be set to 'panda2-canary1'. Otherwise the version will be used. See Google's own archive page for details.
+      codename: [string]            See information below.
       checksum: [string]            [required] The checksum for the version number archive being installed. See information below.
       remove:   [bool]              If true, no archive will be downloaded and any client matching the 'version' value will be removed.
-  primary:                      The client that should be configured to be primary.
-    version:    [string]            [required] The client version that should be marked as primary.
-    symlink:                        If defined, will configure a symlink to the primary studio instance globally.
-        name:   [string]                The name to give to the symlink, otherwise 'astudio' is used.
-        path:   [string]                The path to where the symlink should be created, else `hth_android_studio_default_symlink_path`
-        remove: [bool]                  If true, removes the symlink with the given name.
-    desktop:                        If defined, will configure a desktop entry for the primary studio instance globally.
-      name:     [string]                The name to give the desktop entry, otherwise 'Android Studio' is used.
-      remove:   [bool]                  If true, removes the desktop entry for the primary studio client.
-      keywords: [string array]          A list of strings that will be set as keywords in the desktop entry.
-  canary:                       The client that should be configured to be the canary client.
-    version:    [string]            [required] The client version that should be marked as primary.
-    symlink:                        If defined, will configure a symlink to the primary studio instance globally.
-        name:   [string]                The name to give to the symlink, otherwise 'astudioc' is used.
-        path:   [string]                The path to where the symlink should be created, else `hth_android_studio_default_symlink_path`
-        remove: [bool]                  If true, removes the symlink with the given name.
-    desktop:                        If defined, will configure a desktop entry for the primary studio instance globally.
-      name:     [string]                The name to give the desktop entry, otherwise 'Android Studio Canary' is used.
-      remove:   [bool]                  If true, removes the desktop entry for the primary studio client.
-      keywords: [string array]          A list of strings that will be set as keywords in the desktop entry.
+      desktop:
+        name:   [string]        The name to use for the desktop entry. Defaults to 'Android Studio <version>'
+        remove: [bool]          Indicates if the desktop entry should be removed
+        keywords: [array]       Array of strings to add to the desktop entry for search filtering.
   location:                     Allows for configuration of installation location.
     path:       [string]            Defines the installation path for new studio clients.
     owner:      [string]            Defines the owner of the installation path, otherwise 'root'.
@@ -80,6 +64,14 @@ android_studio:
 ```
 
 For version numbers and their associated checksums seem the archives [here](https://developer.android.com/studio/archive).
+
+##### Codename
+
+Used if the remote artifact is named using a different codename than just the version.
+
+For example if the version is named 'android-studio-panda2-canary1-linux.tar.gz' instead of 'android-studio-2025.3.1.5-linux.tar.gz' then the codename should be set to 'panda2-canary1'. Otherwise the version will be used.
+
+See Google's own archive page (linked above) for details.
 
 ### Defaults
 
